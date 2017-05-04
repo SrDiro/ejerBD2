@@ -1,5 +1,6 @@
 package ejer2bd;
 
+import BDA.bda;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import java.net.URL;
 import java.sql.Connection;
@@ -20,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class FXMLDocumentController implements Initializable {
@@ -34,18 +36,19 @@ public class FXMLDocumentController implements Initializable {
     private TextField tfNombre;
     @FXML
     private TextField tfExtension;
-    private TextField tfComunidadId;
     @FXML
     private Label lbNext;
     @FXML
     private ComboBox<String> cbComunidad;
+    @FXML
+    private ListView<String> tvPrueba;
 
     //ATRIBUTOS
     ResultSet rs;
-    Connection conexion;
     PreparedStatement ps;
+    bda conexion = new bda();
 
-    ObservableList<String> listaComunidades = FXCollections.observableArrayList("");
+    ObservableList<String> listaComunidades = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -53,29 +56,22 @@ public class FXMLDocumentController implements Initializable {
         int siguiente;
 
         try {
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/parques", "root", "root");
+            
             lbEstado.setText("CONECTADO");
             lbEstado.setStyle("-fx-text-fill: green;");
 
-            consulta = "SELECT max(id) AS 'id' FROM parque;";
-            ps = conexion.prepareStatement(consulta);
-            rs = ps.executeQuery();
-            rs.next();
-            siguiente = rs.getInt("id") + 1;
-
-            lbNext.setText("Siguiente: " + siguiente + "");
-            consultaComunidad = "SELECT concat(id, ' (', nombre, ')') AS 'comunidades' FROM comunidad;";
-
-            ps = conexion.prepareStatement(consultaComunidad);
-            rs = ps.executeQuery();
-            rs.next();
-
-            do {
-                listaComunidades.add(rs.getString("comunidades"));
-            } while (rs.next());
-
-            cbComunidad.setItems(listaComunidades);
-
+            lbNext.setText(conexion.conectar());
+//            consultaComunidad = "SELECT concat(id, ' (', nombre, ')') AS 'comunidades' FROM comunidad;";
+//
+//            ps = conexion.prepareStatement(consultaComunidad);
+//            rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                listaComunidades.add(rs.getString("comunidades"));
+//            };
+//
+//            cbComunidad.setItems(listaComunidades);
+//            tvPrueba.setItems(listaComunidades);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             lbEstado.setText("DESCONECTADO");
@@ -86,61 +82,60 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void guardar(ActionEvent event) {
-        double extension;
-        int idParque, comunidadId;
-        String consulta, nombre, valorCB;
-
-        if (btGuardar.isFocused()) {
-            idParque = Integer.parseInt(tfIdParque.getText());
-            nombre = tfNombre.getText();
-            
-            if (!tfExtension.getText().isEmpty()) {
-                extension = Double.parseDouble(tfExtension.getText());
-            } else {
-                extension = -1;
-            }
-
-            try {
-                consulta = "INSERT INTO parque "
-                        + "VALUES (?, ?, ?, ?);";
-//            INSERT INTO parque VALUES (?, ?, ?, ?);
-                ps = conexion.prepareStatement(consulta);
-                ps.setInt(1, idParque);
-                ps.setString(2, nombre);
-                if (extension != -1) {
-                    ps.setDouble(3, extension);
-                } else {
-                    ps.setNull(3, java.sql.Types.DOUBLE);
-                }
-                valorCB = cbComunidad.getValue();
-
-                StringTokenizer tokens = new StringTokenizer(valorCB, " ");
-                comunidadId = Integer.parseInt(tokens.nextToken());
-
-                ps.setInt(4, comunidadId);
-
-                ps.executeUpdate();
-
-                Alert registroIntroducido = new Alert(Alert.AlertType.INFORMATION);
-                registroIntroducido.setTitle("Conexion");
-                registroIntroducido.setHeaderText("Registro introducido correctamente.");
-                registroIntroducido.show();
-
-            } catch (MySQLIntegrityConstraintViolationException ex) {
-                if (ex.getErrorCode() == 1062) {
-                    Alert alertaClaveDuplicada = new Alert(Alert.AlertType.WARNING);
-                    alertaClaveDuplicada.setTitle("Conexion");
-                    alertaClaveDuplicada.setHeaderText(ex.getMessage() + "\n" + "Codigo SQL:" + ex.getErrorCode());
-                    alertaClaveDuplicada.show();
-                } else {
-                    System.out.println(ex.getMessage() + " " + ex.getErrorCode());
-                }
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage() + " " + e.getErrorCode());
-            }
-        }
-
+//        double extension;
+//        int idParque, comunidadId;
+//        String consulta, nombre, valorCB;
+//
+//        if (btGuardar.isFocused()) {
+//            idParque = Integer.parseInt(tfIdParque.getText());
+//            nombre = tfNombre.getText();
+//
+//            if (!tfExtension.getText().isEmpty()) {
+//                extension = Double.parseDouble(tfExtension.getText());
+//            } else {
+//                extension = -1;
+//            }
+//
+//            try {
+//                consulta = "INSERT INTO parque "
+//                        + "VALUES (?, ?, ?, ?);";
+////            INSERT INTO parque VALUES (?, ?, ?, ?);
+//                ps = conexion.prepareStatement(consulta);
+//                ps.setInt(1, idParque);
+//                ps.setString(2, nombre);
+//                if (extension != -1) {
+//                    ps.setDouble(3, extension);
+//                } else {
+//                    ps.setNull(3, java.sql.Types.DOUBLE);
+//                }
+//                valorCB = cbComunidad.getValue();
+//
+//                StringTokenizer tokens = new StringTokenizer(valorCB, " ");
+//                comunidadId = Integer.parseInt(tokens.nextToken());
+//
+//                ps.setInt(4, comunidadId);
+//
+//                ps.executeUpdate();
+//
+//                Alert registroIntroducido = new Alert(Alert.AlertType.INFORMATION);
+//                registroIntroducido.setTitle("Conexion");
+//                registroIntroducido.setHeaderText("Registro introducido correctamente.");
+//                registroIntroducido.show();
+//
+//            } catch (MySQLIntegrityConstraintViolationException ex) {
+//                if (ex.getErrorCode() == 1062) {
+//                    Alert alertaClaveDuplicada = new Alert(Alert.AlertType.WARNING);
+//                    alertaClaveDuplicada.setTitle("Conexion");
+//                    alertaClaveDuplicada.setHeaderText(ex.getMessage() + "\n" + "Codigo SQL:" + ex.getErrorCode());
+//                    alertaClaveDuplicada.show();
+//                } else {
+//                    System.out.println(ex.getMessage() + " " + ex.getErrorCode());
+//                }
+//
+//            } catch (SQLException e) {
+//                System.out.println(e.getMessage() + " " + e.getErrorCode());
+//            }
+//        }
+//
     }
-
 }

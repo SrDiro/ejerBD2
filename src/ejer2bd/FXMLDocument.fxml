@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="359.0" prefWidth="423.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ejer2bd.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="549.0" prefWidth="423.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ejer2bd.FXMLDocumentController">
    <children>
       <Label layoutX="71.0" layoutY="51.0" text="id parque" />
       <Label layoutX="80.0" layoutY="103.0" text="nombre" />
@@ -24,5 +24,6 @@
       </Label>
       <Label fx:id="lbNext" layoutX="264.0" layoutY="51.0" text="Label" />
       <ComboBox fx:id="cbComunidad" layoutX="161.0" layoutY="198.0" prefWidth="150.0" promptText="comunidad..." />
+      <ListView fx:id="tvPrueba" layoutX="112.0" layoutY="330.0" prefHeight="200.0" prefWidth="200.0" />
    </children>
 </AnchorPane>
