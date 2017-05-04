@@ -3,6 +3,7 @@ package Modelo;
 import BDA.bda;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.IntegerProperty;
@@ -47,7 +48,7 @@ public class Comunidad {
         return nombre;
     }
 
-    public List<Comunidad> buscarComunidad() {
+    public List<Comunidad> buscarComunidad() throws SQLException {
         bda conexion = new bda();
         ResultSet rs;
         PreparedStatement ps;
@@ -57,12 +58,9 @@ public class Comunidad {
         
         conComunidad = "SELECT concat(id, ' (', nombre, ')') AS 'comunidades' FROM comunidad;";
 
-        ps = conexion.prepareStatement(consultaComunidad);
+        ps = conexion.prepareStatement(conComunidad);
         rs = ps.executeQuery();
 
-        while (rs.next()) {
-            listaComunidades.add(rs.getString("comunidades"));
-        };
 
         return listaComunidades;
 
